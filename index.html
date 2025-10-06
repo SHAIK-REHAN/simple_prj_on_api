@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fruit List App</title>
+</head>
+<body>
+  <h1>🍎 Fruit List</h1>
+  <button onclick="getList()">Get Fruit List</button>
+  <ul id="fruit-list"></ul>
+
+  <h2>Add New Fruit</h2>
+  <input type="text" id="newFruit" placeholder="Enter fruit name" />
+  <button onclick="addFruit()">Add Fruit</button>
+
+  <script>
+    function getList() {
+      fetch('/getList/')
+        .then(response => response.json())
+        .then(data => {
+          const list = document.getElementById('fruit-list');
+          list.innerHTML = '';
+          for (const key in data) {
+            const li = document.createElement('li');
+            li.textContent = data[key];
+            list.appendChild(li);
+          }
+        });
+    }
+
+    function addFruit() {
+      const fruitName = document.getElementById('newFruit').value;
+      fetch('/postList/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ item: fruitName })
+      })
+        .then(response => response.json())
+        .then(data => {
+          alert("Fruit added!");
+          getList(); // Refresh the list
+        });
+    }
+  </script>
+</body>
+</html>
